@@ -18,7 +18,7 @@ Options:
   -h         Print help information. 
 ```
 
-## Usage
+## Example
 
 **Generate CA:**
 
