@@ -77,12 +77,23 @@ sign_cert() {
   openssl req -subj "/CN=${1}" -sha256 -newkey rsa:4096 -keyout ${certPath}/${1}.key -out ${certPath}/${1}.csr -nodes
 
   # Create extend info.
-  echo "subjectAltName = DNS:${1}" > ${certPath}/${1}.cnf
-  echo "extendedKeyUsage = serverAuth" >> ${certPath}/${1}.cnf
+  echo "extendedKeyUsage = serverAuth" > ${certPath}/${1}.cnf
+  # Adjust for Asus AC68U Router
+  echo "basicConstraints = CA:FALSE" >> ${certPath}/${1}.cnf
+  echo "subjectAltName = @alt_names" >> ${certPath}/${1}.cnf
+  echo "" >> ${certPath}/${1}.cnf
+  echo "[alt_names]" >> ${certPath}/${1}.cnf
+  echo "DNS.1 = ${1}" >> ${certPath}/${1}.cnf
 
   # Sign certificate
-  openssl x509 -req -days $DAYS -sha256 -in ${certPath}/${1}.csr -CA ca/ca.crt -CAkey ca/ca.key -CAcreateserial \
-    -out ${certPath}/${1}.crt -extfile ${certPath}/${1}.cnf
+  RUN_SIGN="openssl x509 -req -days $DAYS -sha256 -in ${certPath}/${1}.csr -CA ca/ca.crt -CAkey ca/ca.key -CAcreateserial \
+    -out ${certPath}/${1}.crt -extfile ${certPath}/${1}.cnf"
+  $RUN_SIGN
+  
+  # Hint
+  echo ">> Hint:"
+  echo "> The openssl parameters in ${certPath}/${1}.cnf, add DNS.2 = ... or IP.1 = ... if necessary. Then run:"
+  echo $RUN_SIGN
 }
 
 
