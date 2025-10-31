@@ -13,9 +13,9 @@ A PKI Key generate Shell script based on OpenSSL. This can be userful for TLS ce
 genkey.sh [ca|DOMAIN|-h]
 
 Options:
-  ca         Generate CA key and CA certificate.
-  DOMAIN     Sign certificate for domain DOMAIN if CA is already exist.
-  -h         Print help information. 
+  ca [DAYS]      Generate CA key and CA certificate.
+  DOMAIN [DAYS]  Sign certificate for domain DOMAIN if CA is already exist.
+  -h             Print help information. 
 ```
 
 ## Example
