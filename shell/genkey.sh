@@ -3,7 +3,7 @@
 set -e
 set -o pipefail
 
-DAYS=365
+DAYS=${2:-365}
 
 help() {
   # Display help info.
@@ -11,8 +11,8 @@ help() {
   echo
   echo "Syntax: genkey.sh [ca|DOMAIN|-h]"
   echo "Options:"
-  echo "  ca         Generate CA key and CA certificate."
-  echo "  DOMAIN     Sign certificate for domain DOMAIN if CA is already exist."
+  echo "  ca [DAYS]        Generate CA key and CA certificate."
+  echo "  DOMAIN [DAYS]    Sign certificate for domain DOMAIN if CA is already exist."
   echo "  -h         Print help information."
   echo 
   echo "Usage:"
@@ -23,8 +23,8 @@ help() {
   echo "    'sh $0 domain.local': will create 'certs/domain.local' directory in current workspace and generate certificate for domain 'domain.local' sign by CA."
   echo  
   echo "Hint:"
-  echo "  Destination files will be copied to 'backup' directory if exist."
-  echo "  Change 'DAYS=?' in script to defins the number of days to certify the certificate for. Default 365 days."
+  echo "  * Destination files will be copied to 'backup' directory if exist."
+  echo "  * Use a number with the subcommand to set the certificate's validity period (in days). The default is 365."
 }
 
 check() {
@@ -78,6 +78,8 @@ sign_cert() {
 
   # Create extend info.
   echo "extendedKeyUsage = serverAuth" > ${certPath}/${1}.cnf
+  # For Client auth only
+  # echo "extendedKeyUsage = clientAuth" > ${certPath}/${1}.cnf
   # Adjust for Asus AC68U Router
   echo "basicConstraints = CA:FALSE" >> ${certPath}/${1}.cnf
   echo "subjectAltName = @alt_names" >> ${certPath}/${1}.cnf
